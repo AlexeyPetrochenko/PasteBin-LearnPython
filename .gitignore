@@ -163,3 +163,4 @@ cython_debug/
 
 # DataBase files
 paste_bin.db
+db.py

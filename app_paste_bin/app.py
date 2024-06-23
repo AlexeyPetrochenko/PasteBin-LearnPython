@@ -13,4 +13,3 @@ def create_app(config_filename='config.py'):
         return f'Home Page'
 
     return app
-
