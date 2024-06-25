@@ -1,5 +1,4 @@
-import os
+from app_paste_bin.settings import USER_NAME_DB, PASSWORD_DB, URL_DB, NAME_DB
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, '..', 'paste_bin.db')
+SQLALCHEMY_DATABASE_URI = f'postgresql://{USER_NAME_DB}:{PASSWORD_DB}@{URL_DB}/{NAME_DB}'
