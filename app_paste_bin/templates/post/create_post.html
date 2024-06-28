@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-7 text-bg-secondary">
+    <form action="{{ url_for('post.process_create_post') }}" method="POST">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-warning" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            {{ form_post.hidden_tag() }}
+            <div class="mb-3 form-check">
+                {{ form_post.writing_area.label(class_='form-label fs-4', style='margin-left: -11px') }}
+                {{ form_post.writing_area() }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-7">
+                <div class="row row-cols-2 gy-2">
+                    <div class="col-4">{{ form_post.title_post.label(class='col-form-label') }}</div>
+                    <div class="col-8">{{ form_post.title_post() }}</div>
+
+                    <div class="col-4">{{ form_post.syntax.label(class='col-form-label') }}</div>
+                    <div class="col-8">{{ form_post.syntax() }}</div>
+
+                    <div class="col-4">{{ form_post.lifespan.label(class='col-form-label') }}</div>
+                    <div class="col-8">{{ form_post.lifespan() }}</div>
+
+                    <div class="col-4">{{ form_post.privacy.label(class='col-form-label') }}</div>
+                    <div class="col-8">{{ form_post.privacy() }}</div>
+
+                    <div class="col-4">{{ form_post.password_post.label(class='col-form-label') }}</div>
+                    <div class="col-8">
+                        <div class="input-group mb-3">
+                          <div class="input-group-text">
+                            {{ form_post.is_password() }}
+                          </div>
+                            {{ form_post.password_post() }}
+                        </div>
+                    </div>
+                    
+                    <div class="col-4"></div>
+                    <div class="col-8">{{ form_post.submit() }}</div>
+                </div>
+            </div>
+            <div class="col-5 bg-primary-lighter">ЛИЧНЫЙ ПРОФИЛЬ</div>
+        </div>
+    </form>
+    </div>
+
+    <div class="col-5 text-bg-secondary p-3">Топ 10 постов</div>
+
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

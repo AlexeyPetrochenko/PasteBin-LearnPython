@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey
 
 from app_paste_bin.db import Base
+from app_paste_bin.user.models import User
 
 
 class Post(Base):
