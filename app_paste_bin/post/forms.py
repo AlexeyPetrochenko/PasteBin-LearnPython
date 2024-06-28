@@ -19,7 +19,6 @@ class PostForm(FlaskForm):
                          render_kw={'class': 'form-select'})
     lifespan = SelectField('Срок жизни:', validators=[DataRequired()],
                              choices=[
-                                 ('none', 'None'),
                                  ('never', 'Не удалять'),
                                  ('min', '15 минут'),
                                  ('hour', '1 час'),
@@ -32,7 +31,6 @@ class PostForm(FlaskForm):
                           choices=[
                               ('public', 'Публичный'),
                               ('private', 'Приватный'),
-                              ('password', 'Запароленный'),
                           ],
                           render_kw={'class': 'form-select'})
     is_password = BooleanField(render_kw={'class': 'form-check-input mt-0'})
