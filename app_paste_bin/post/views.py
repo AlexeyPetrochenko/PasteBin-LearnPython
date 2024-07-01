@@ -26,7 +26,7 @@ def process_create_post():
                 new_post = Post(
                     user_id=data['user_id'], title=data['title'], date_create=data['date_create'],
                     date_deletion=data['date_deletion'], privacy=data['privacy'], password=data['password'],
-                    syntax=data['syntax'], url_post_text=data['url_post']
+                    syntax=data['syntax'], post_text=data['content'], url_post_text=data['url_post']
                 )
                 db.session.add(new_post)
                 db.session.commit()
@@ -40,3 +40,16 @@ def process_create_post():
 
     flash('Некоторые поля заполнены неверно')
     return redirect(url_for('post.create_post'))
+
+
+@blueprint.route('/post/<int:url_post>')
+def get_post(url_post):
+    post_from_db = Post.query.filter(Post.id == url_post).first()
+    if post_from_db:
+        content_post = post_from_db.post_text
+        author = post_from_db.user_id
+        user = post_from_db.user
+        print(user.login)
+    else:
+        content_post = 'Такого посто нет'
+    return render_template('post/post_from_db.html')
