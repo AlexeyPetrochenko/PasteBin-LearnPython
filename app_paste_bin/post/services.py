@@ -28,7 +28,7 @@ def form_handler(form_data: dict):
 
 def get_ttl(life_time):
     if life_time == 'never':
-        date_delete = None
+        date_delete = datetime.now() + timedelta(days=3650)
     elif life_time == 'min':
         date_delete = datetime.now() + timedelta(minutes=15)
     elif life_time == 'hour':
@@ -40,8 +40,25 @@ def get_ttl(life_time):
     elif life_time == 'after_read':
         date_delete = datetime.now()
     else:
-        date_delete = None
+        date_delete = datetime.now() + timedelta(days=30)
     return date_delete
+
+
+def get_lifespan(date_delete: datetime):
+    if isinstance(date_delete, datetime):
+        ttl = date_delete - datetime.now()
+        if ttl > timedelta(minutes=0):
+            if ttl > timedelta(days=365):
+                return True, 'NEVER'
+            if ttl > timedelta(days=1):
+                return ttl.days, 'days'
+            elif ttl > timedelta(seconds=3600):
+                return ttl.seconds // 3600, 'hours'
+            elif ttl > timedelta(seconds=60):
+                return ttl.seconds // 60, 'minutes'
+            return ttl.seconds, 'seconds'
+
+        return False, 'delete'
 
 
 def get_privacy(privacy):
@@ -59,3 +76,7 @@ def password_verification(privacy, is_password, password):
     elif not password:
         password = None
     return password
+
+
+
+

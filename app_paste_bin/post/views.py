@@ -1,7 +1,10 @@
 from flask import Blueprint, flash, render_template, redirect, url_for
 
+from datetime import datetime
+import time
+
 from .forms import PostForm
-from .services import form_handler
+from .services import form_handler, get_lifespan
 from .models import Post
 from app_paste_bin.db import db
 
@@ -46,10 +49,24 @@ def process_create_post():
 def get_post(url_post):
     post_from_db = Post.query.filter(Post.id == url_post).first()
     if post_from_db:
-        content_post = post_from_db.post_text
-        author = post_from_db.user_id
-        user = post_from_db.user
-        print(user.login)
+        try:
+            title_post = post_from_db.title
+            content_post = post_from_db.post_text
+            name_author = post_from_db.user.login
+            date_create = datetime.strftime(post_from_db.date_create, '%d.%m.%Y')
+            date_delete = post_from_db.date_deletion
+            value_life_time, name_value_time = get_lifespan(date_delete)
+        except AttributeError:
+            flash('У этого поста таких полей нет')
+            return redirect(url_for('post.create_post'))
+        if value_life_time:
+            return render_template(
+                'post/post_from_db.html', content=content_post,
+                name_author=name_author, date_create=date_create, value_life_time=value_life_time,
+                name_value_time=name_value_time, title_post=title_post
+                                   )
+        else:
+            return f'К сожалению этот пост был удален {date_delete}'
     else:
-        content_post = 'Такого посто нет'
-    return render_template('post/post_from_db.html')
+        flash('Такого поста нет в БД')
+        return redirect(url_for('post.create_post'))

@@ -18,7 +18,7 @@ class Post(Base):
     syntax = Column(String)
     post_text = Column(Text())
     url_post_text = Column(String)
-    user = relationship('User')
+    user = relationship('User', lazy='joined')
 
     def __repr__(self):
         return f'Post {self.id}, {self.title} from {self.user_id}'
