@@ -12,7 +12,7 @@ class User(Base):
     email = Column(String(64))
     password = Column(String(128))
     date_register = Column(DateTime)
-    posts = relationship('Post')
+    posts = relationship('Post', back_populates='user')
 
     def __repr__(self):
         return f'User {self.id}, {self.login}'
