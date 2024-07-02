@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="row gx-0">
+        <div class="col h4 my-3"><div style="">Публичные посты</div></div>
+    </div>
+    <div class="row gx-0 mb-4 h5">
+        <div class="col">Название поста</div>
+        <div class="col text-center">Автор поста</div>
+        <div class="col text-center">Лайки/Дизлайки</div>
+        <div class="col text-center">Дата создания</div>
+        <div class="col text-center">Осталось существовать</div>
+        <div class="col text-center">Синтаксис</div>
+    </div>
+    <div class="row gx-0">
+        {% for post in public_posts %}
+            <hr>
+            <div class="row gx-0 h6">
+                <div class="col">
+                    <a href="{{ url_for('post.get_post', url_post=post.id) }}">{{ post.title }}</a>
+                </div>
+                <div class="col text-center">{{ post.user.login }}</div>
+                <div class="col text-center">10/5</div>
+                <div class="col text-center">{{ post.get_date_create() }}</div>
+                <div class="col text-center">{{ post.get_lifespan() }}</div>
+                <div class="col text-center">{{ post.syntax }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

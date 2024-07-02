@@ -44,28 +44,11 @@ def get_ttl(life_time):
     return date_delete
 
 
-def get_lifespan(date_delete: datetime):
-    if isinstance(date_delete, datetime):
-        ttl = date_delete - datetime.now()
-        if ttl > timedelta(minutes=0):
-            if ttl > timedelta(days=365):
-                return True, 'NEVER'
-            if ttl > timedelta(days=1):
-                return ttl.days, 'days'
-            elif ttl > timedelta(seconds=3600):
-                return ttl.seconds // 3600, 'hours'
-            elif ttl > timedelta(seconds=60):
-                return ttl.seconds // 60, 'minutes'
-            return ttl.seconds, 'seconds'
-
-        return False, 'delete'
-
-
 def get_privacy(privacy):
     if privacy == 'public':
-        return False
-    else:
         return True
+    else:
+        return False
 
 
 def password_verification(privacy, is_password, password):
