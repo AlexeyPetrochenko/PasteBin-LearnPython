@@ -8,7 +8,7 @@
             <div class="col-2" style="padding-left: -100px"><img src="https://pastebin.com/themes/pastebin/img/guest.png" class="img-thumbnail" width="95" height="95" alt="..."></div>
             <div class="col-10">
                 <div class="row text-left">
-                    <div class="col h5">{{ title_post }}</div>
+                    <div class="col h5">{{ model_post.title }}</div>
                 </div>
                 <div class="row  mb-2 gx-0">
                     <div class="col-2">Имя автора:</div>
@@ -24,9 +24,10 @@
                 </div>
 
                 <div class="row  mb-2 gx-0">
-                    <div class="col-2">{{ name_author }}</div>
-                    <div class="col-2" style="margin-right: 15px">{{ name_value_time }}:{{ value_life_time }}</div>
-                    <div class="col-3" style="margin-right: 25px">{{ date_create }}</div>
+
+                    <div class="col-2">{{ model_post.user.login }}</div>
+                    <div class="col-2" style="margin-right: 15px">{{ model_post.get_lifespan() }}</div>
+                    <div class="col-3" style="margin-right: 25px">{{ model_post.get_date_create() }}</div>
                     <div class="col-4">
                         <div class="row gx-0">
                             <div class="col" style="margin-right: 30px"> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">10</div></div>
@@ -39,7 +40,7 @@
         </div>
         <div class="row text-bg-secondary">
             <div class="col">
-                <textarea class="form-control height" style="height: 400px; resize: none;">{{ content }}</textarea>
+                <textarea class="form-control height" style="height: 400px; resize: none;">{{ model_post.post_text }}</textarea>
             </div>
         </div>
         <div class="row">

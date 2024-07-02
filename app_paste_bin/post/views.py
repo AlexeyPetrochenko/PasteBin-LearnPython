@@ -1,4 +1,9 @@
 from flask import Blueprint, flash, render_template, redirect, url_for
+from sqlalchemy import and_
+from sqlalchemy.exc import OperationalError
+
+from datetime import datetime
+import time
 
 from datetime import datetime
 import time
@@ -35,38 +40,39 @@ def process_create_post():
                 db.session.commit()
 
                 flash('Круто ты создал пост')
-                return redirect(url_for('post.create_post'))
-            except KeyError as err:
-                print(f'Из form_handler вернулись неполные данные {err}')
-            except TypeError as err:
-                print(f'Из form_handler вернулись данные не в том формате {err}')
+                return redirect(url_for('post.get_post', url_post=new_post.id))
+            except (KeyError, TypeError) as err:
+                print(f'Из form_handler вернулись данные не в том формате или неполные данные {err}')
+                flash('Форма заполнена неверно')
+            except OperationalError as err:
+                print(f'Сбой в подключении {err}')
+                flash('Очень жаль. Сервер БД неожиданно закрыл соединение')
 
-    flash('Некоторые поля заполнены неверно')
     return redirect(url_for('post.create_post'))
 
 
 @blueprint.route('/post/<int:url_post>')
 def get_post(url_post):
-    post_from_db = Post.query.filter(Post.id == url_post).first()
-    if post_from_db:
-        try:
-            title_post = post_from_db.title
-            content_post = post_from_db.post_text
-            name_author = post_from_db.user.login
-            date_create = datetime.strftime(post_from_db.date_create, '%d.%m.%Y')
-            date_delete = post_from_db.date_deletion
-            value_life_time, name_value_time = get_lifespan(date_delete)
-        except AttributeError:
-            flash('У этого поста таких полей нет')
-            return redirect(url_for('post.create_post'))
-        if value_life_time:
-            return render_template(
-                'post/post_from_db.html', content=content_post,
-                name_author=name_author, date_create=date_create, value_life_time=value_life_time,
-                name_value_time=name_value_time, title_post=title_post
-                                   )
+
+    try:
+        post_from_db = Post.query.filter(and_(Post.id == url_post, Post.date_deletion > datetime.now())).first()
+        if post_from_db:
+            return render_template('post/post_from_db.html', model_post=post_from_db)
         else:
-            return f'К сожалению этот пост был удален {date_delete}'
-    else:
-        flash('Такого поста нет в БД')
-        return redirect(url_for('post.create_post'))
+            flash('Такого поста нет в БД')
+            return redirect(url_for('post.create_post'))
+    except OperationalError as err:
+        print(f'Сбой в подключении {err}')
+        flash('Очень жаль. Сервер неожиданно закрыл соединение')
+
+
+@blueprint.route('/all-public-posts')
+def get_all_public_posts():
+    try:
+        public_posts = Post.query.filter(and_(Post.privacy == True, Post.date_deletion > datetime.now())).all()
+        for post in public_posts:
+            print(post)
+        return render_template('post/all_public_posts.html', public_posts=public_posts)
+    except OperationalError as err:
+        print(f'Сбой в подключении к БД {err}')
+        flash('Очень жаль. Сервер БД неожиданно закрыл соединение')

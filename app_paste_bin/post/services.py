@@ -63,9 +63,9 @@ def get_lifespan(date_delete: datetime):
 
 def get_privacy(privacy):
     if privacy == 'public':
-        return False
-    else:
         return True
+    else:
+        return False
 
 
 def password_verification(privacy, is_password, password):
