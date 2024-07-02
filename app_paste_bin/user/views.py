@@ -5,7 +5,6 @@ from .forms import LoginForm
 from .models import User
 
 
-
 blueprint = Blueprint('login', __name__, url_prefix='/user')
 
 
