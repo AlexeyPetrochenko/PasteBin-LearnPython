@@ -5,8 +5,11 @@ from sqlalchemy.exc import OperationalError
 from datetime import datetime
 import time
 
+from datetime import datetime
+import time
+
 from .forms import PostForm
-from .services import form_handler
+from .services import form_handler, get_lifespan
 from .models import Post
 from app_paste_bin.db import db
 
@@ -50,6 +53,7 @@ def process_create_post():
 
 @blueprint.route('/post/<int:url_post>')
 def get_post(url_post):
+
     try:
         post_from_db = Post.query.filter(and_(Post.id == url_post, Post.date_deletion > datetime.now())).first()
         if post_from_db:
@@ -72,5 +76,3 @@ def get_all_public_posts():
     except OperationalError as err:
         print(f'Сбой в подключении к БД {err}')
         flash('Очень жаль. Сервер БД неожиданно закрыл соединение')
-
-
