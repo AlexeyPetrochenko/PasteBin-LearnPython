@@ -1,10 +1,12 @@
+from flask import url_for
+from flask_login import current_user
+
 from datetime import datetime, timedelta
-from flask import flash, url_for
 
 
 def form_handler(form_data: dict):
     try:
-        user_id = 1
+        user_id = current_user.id
         title = form_data['title_post'].strip()
         life_time = form_data['lifespan']
         date_create = datetime.now()
