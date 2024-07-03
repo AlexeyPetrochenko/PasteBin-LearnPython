@@ -5,7 +5,7 @@ from .forms import LoginForm
 from .models import User
 
 
-blueprint = Blueprint('login', __name__, url_prefix='/user')
+blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
 @blueprint.route('/login')
@@ -29,11 +29,11 @@ def process_login():
             return redirect(url_for('post.create_post'))
 
     flash('Неправильное имя пользователя или пароль')
-    return redirect(url_for('login.login'))
+    return redirect(url_for('user.login'))
 
 
 @blueprint.route('/logout')
 def logout():
     logout_user()
     flash('Вы успешно разлогинились')
-    return redirect(url_for('login.login'))
+    return redirect(url_for('user.login'))

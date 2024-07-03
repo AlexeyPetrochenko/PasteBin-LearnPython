@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-lg bg-body-secondary">
+  <div class="container-fluid ">
+    <a class="navbar-brand" href="{{ url_for('post.create_post') }}">PasteBin</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="" href="{{ url_for('post.get_all_public_posts') }}">
+            <button class="btn btn-outline-secondary me-3" type="button">Все посты</button>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="" href="{{ url_for('post.create_post') }}">
+            <button class="btn btn-outline-success me-3" type="button">Новый пост</button>
+          </a>
+        </li>
+
+      </ul>
+        <a class="" href="{{ url_for('user.login') }}">
+          <button class="btn btn-outline-secondary me-2" type="submit">Вход</button>
+        </a>
+        <a class="" href="{{ url_for('user.login') }}">
+          <button class="btn btn-outline-secondary" type="submit">Регистрация</button>
+        </a>
+
+    </div>
+  </div>
+</nav>
