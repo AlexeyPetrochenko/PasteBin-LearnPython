@@ -8,4 +8,4 @@ class LoginForm(FlaskForm):
                            render_kw={"class": "form-control"})
     password = PasswordField('Пароль', validators=[DataRequired()],
                              render_kw={"class": "form-control"})
-    submit = SubmitField('Отправить', render_kw={"class": "btn btn-primary"})
+    submit = SubmitField('Отправить', render_kw={"class": "btn btn-primary mt-2"})
