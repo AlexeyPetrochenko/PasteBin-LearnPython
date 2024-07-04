@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="row">
+    <div class="row gx-0">
+        <div class="col-1" style="padding-left: -100px"><img src="https://pastebin.com/themes/pastebin/img/guest.png" class="img-thumbnail" width="95" height="95" alt="..."></div>
+        <div class="col-5">
+            <div class="row h5 mt-1">{{ user.login }}</div>
+            <div class="row mt-3">Зарегестрирован: <br>{{ user.get_date_register() }}</div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row gx-0 my-4 h5">
+        <div class="col">Название поста</div>
+        <div class="col text-center">Осталось</div>
+        <div class="col text-center">Лайки/Дизлайки</div>
+        <div class="col text-center">Дата создания</div>
+        <div class="col text-center">Просмотры</div>
+        <div class="col text-center">Редактировать</div>
+        <div class="col text-center">Удалить</div>
+    </div>
+    <div class="row gx-0">
+        {% for post in user.posts %}
+            <hr>
+            <div class="row gx-0 h6">
+                <div class="col">
+                    <a href="{{ url_for('post.get_post', url_post=post.id) }}">{{ post.title }}</a>
+                </div>
+                <div class="col text-center">{{ post.get_lifespan() }}</div>
+                <div class="col text-center">10/5</div>
+                <div class="col text-center">{{ post.get_date_create() }}</div>
+                <div class="col text-center">100</div>
+
+                    <div class="col text-center">
+                        <a href="{{ url_for('post.update_post', post_id=post.id) }}">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1483/1483205.png" width="30" height="30" alt="" title="" class="mb-1">
+                        </a>
+                    </div>
+
+                <div class="col text-center">
+                    <a href="{{ url_for('post.delete_post', post_id=post.id) }}">
+                     <img src="https://cdn-icons-png.flaticon.com/512/151/151882.png" width="25" height="25" alt="" title="" class="">
+                    </a>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, render_template, redirect, url_for
 from flask_login import login_user, current_user, logout_user
 
+from slugify import slugify
+
 from .forms import LoginForm
 from .models import User
 
@@ -14,7 +16,7 @@ def login():
         return redirect(url_for('post.create_post'))
     title = "Авторизация"
     login_form = LoginForm()
-    return render_template('user/login.html', page_title=title, form=login_form)
+    return render_template('user/login.html', page_title=title, form=login_form, user=current_user)
 
 
 @blueprint.route('/process-login', methods=['POST'])
@@ -36,4 +38,11 @@ def process_login():
 def logout():
     logout_user()
     flash('Вы успешно разлогинились')
+    return redirect(url_for('user.login'))
+
+
+@blueprint.route('/personal-account/<slug_login>')
+def personal_account(slug_login):
+    if current_user.is_authenticated:
+        return render_template('user/personal_account.html', user=current_user)
     return redirect(url_for('user.login'))
