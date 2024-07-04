@@ -4,12 +4,12 @@ from wtforms.validators import DataRequired, Optional
 
 
 class PostForm(FlaskForm):
-    writing_area = TextAreaField(label='Новый пост', validators=[DataRequired()],
-                                 render_kw={
+    post_text = TextAreaField(label='Новый пост', validators=[DataRequired()],
+                              render_kw={
                                      'class': 'form-control height:',
                                      'style': 'height: 400px; resize: none; margin-left: -11px'
                                  })
-    title_post = StringField(label='Название поста:', validators=[DataRequired()], render_kw={'class': 'form-control'})
+    title = StringField(label='Название поста:', validators=[DataRequired()], render_kw={'class': 'form-control'})
     syntax = SelectField('Синтаксис:', validators=[DataRequired()],
                          choices=[
                              ('none', 'None'),
@@ -36,4 +36,4 @@ class PostForm(FlaskForm):
     is_password = BooleanField(render_kw={'class': 'form-check-input mt-0'})
     password_post = StringField('Пароль:',  validators=[Optional()], render_kw={'class': 'form-control'})
     submit = SubmitField(label='Создать новый пост', render_kw={'class': 'btn btn-success form-control mb-5'})
-
+    submit_update = SubmitField(label='Сохранить изменения', render_kw={'class': 'btn btn-success form-control mb-5'})

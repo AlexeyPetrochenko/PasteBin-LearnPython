@@ -22,7 +22,7 @@
       </ul>
 
       {% if user.is_authenticated %}
-        <a class="" href="{{ url_for('post.get_all_public_posts') }}">
+        <a class="" href="{{ url_for('user.personal_account', slug_login=user.login) }}">
           <button class="btn btn-outline-secondary me-2" type="submit">Личный кабинет: {{ user.login }}</button>
         </a>
          <a class="" href="{{ url_for('user.logout') }}">

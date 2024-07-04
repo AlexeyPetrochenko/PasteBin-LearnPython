@@ -7,14 +7,14 @@ from datetime import datetime, timedelta
 def form_handler(form_data: dict):
     try:
         user_id = current_user.id
-        title = form_data['title_post'].strip()
+        title = form_data['title'].strip()
         life_time = form_data['lifespan']
         date_create = datetime.now()
         date_deletion = get_ttl(life_time)
         privacy = get_privacy(form_data['privacy'])
         password = password_verification(privacy, form_data['is_password'], form_data['password_post'])
         syntax = form_data['syntax']
-        content = form_data['writing_area']
+        content = form_data['post_text']
         url_post = url_for('post.create_post')
 
         processed_data = {
