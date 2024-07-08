@@ -7,6 +7,7 @@ from alembic import context
 
 from app_paste_bin.user.models import User
 from app_paste_bin.post.models import Post
+from app_paste_bin.post.models import LikeOnPost
 from app_paste_bin.db import Base
 
 # this is the Alembic Config object, which provides

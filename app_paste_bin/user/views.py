@@ -1,10 +1,13 @@
 from flask import Blueprint, flash, render_template, redirect, url_for
 from flask_login import login_user, current_user, logout_user
 
-from slugify import slugify
+from sqlalchemy import and_
+
+from datetime import datetime
 
 from .forms import LoginForm
 from .models import User
+from app_paste_bin.post.models import Post
 
 
 blueprint = Blueprint('user', __name__, url_prefix='/user')
@@ -44,5 +47,6 @@ def logout():
 @blueprint.route('/personal-account/<slug_login>')
 def personal_account(slug_login):
     if current_user.is_authenticated:
-        return render_template('user/personal_account.html', user=current_user)
+        current_posts = [post for post in current_user.posts if post.date_deletion > datetime.now()]
+        return render_template('user/personal_account.html', user=current_user, current_posts=current_posts)
     return redirect(url_for('user.login'))

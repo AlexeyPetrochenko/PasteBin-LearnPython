@@ -1,7 +1,13 @@
-from flask import url_for
+from flask import url_for, flash
 from flask_login import current_user
 
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import and_
+
 from datetime import datetime, timedelta
+
+from .models import LikeOnPost, Post
+from app_paste_bin.db import db_session
 
 
 def form_handler(form_data: dict):
@@ -46,23 +52,6 @@ def get_ttl(life_time):
     return date_delete
 
 
-def get_lifespan(date_delete: datetime):
-    if isinstance(date_delete, datetime):
-        ttl = date_delete - datetime.now()
-        if ttl > timedelta(minutes=0):
-            if ttl > timedelta(days=365):
-                return True, 'NEVER'
-            if ttl > timedelta(days=1):
-                return ttl.days, 'days'
-            elif ttl > timedelta(seconds=3600):
-                return ttl.seconds // 3600, 'hours'
-            elif ttl > timedelta(seconds=60):
-                return ttl.seconds // 60, 'minutes'
-            return ttl.seconds, 'seconds'
-
-        return False, 'delete'
-
-
 def get_privacy(privacy):
     if privacy == 'public':
         return True
@@ -80,5 +69,24 @@ def password_verification(privacy, is_password, password):
     return password
 
 
-
+def process_the_rate_like_or_dislike(list_likes: list[LikeOnPost], like_or_dislike: bool, post: Post):
+    user_like = LikeOnPost.query.filter(and_(LikeOnPost.post_id == post.id, LikeOnPost.user_id == current_user.id)).first()
+    if user_like:
+        if isinstance(user_like.is_like, bool):
+            if like_or_dislike and user_like.is_like or not like_or_dislike and not user_like.is_like:
+                user_like.is_like = None
+            else:
+                if like_or_dislike:
+                    user_like.is_like = True
+                else:
+                    user_like.is_like = False
+        else:
+            user_like.is_like = like_or_dislike
+    else:
+        new_like = LikeOnPost(user_id=current_user.id, post_id=post.id, is_like=like_or_dislike)
+        db_session.add(new_like)
+    try:
+        db_session.commit()
+    except SQLAlchemyError:
+        flash('Лайк не прошел, база данных дала сбой')
 
