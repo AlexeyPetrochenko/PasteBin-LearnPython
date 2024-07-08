@@ -22,7 +22,7 @@
                     <a href="{{ url_for('post.get_post', url_post=post.id) }}">{{ post.title }}</a>
                 </div>
                 <div class="col text-center">{{ post.user.login }}</div>
-                <div class="col text-center">10/5</div>
+                <div class="col text-center">{{ post.count_likes() }}/{{ post.count_dislikes() }}</div>
                 <div class="col text-center">{{ post.get_date_create() }}</div>
                 <div class="col text-center">{{ post.get_lifespan() }}</div>
                 <div class="col text-center">{{ post.syntax }}</div>

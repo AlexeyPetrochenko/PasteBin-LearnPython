@@ -17,8 +17,16 @@
                     <div class="col-4">
                         <div class="row gx-0">
                             <div class="col" style="margin-right: 30px"><img src="https://cdn-icons-png.flaticon.com/512/159/159604.png" width="30px" height="30px"></div>
-                            <div class="col"><img src="https://cdn-icons-png.flaticon.com/512/16022/16022266.png" width="30px" height="30px"></div>
-                            <div class="col" style="margin-top: 4px"><img src="https://cdn-icons-png.flaticon.com/512/4926/4926590.png" width="28px" height="28px"></div>
+                            <div class="col">
+                                <a href="{{ url_for('post.rate_post', post_id=model_post.id, like_or_dislike=1) }}">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/16022/16022266.png" width="30px" height="30px">
+                                </a>
+                            </div>
+                            <div class="col" style="margin-top: 4px">
+                                <a href="{{ url_for('post.rate_post', post_id=model_post.id, like_or_dislike=0) }}">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/4926/4926590.png" width="28px" height="28px">
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -30,9 +38,9 @@
                     <div class="col-3" style="margin-right: 25px">{{ model_post.get_date_create() }}</div>
                     <div class="col-4">
                         <div class="row gx-0">
-                            <div class="col" style="margin-right: 30px"> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">10</div></div>
-                            <div class="col"> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">10</div></div>
-                            <div class="col" style=""> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">10</div></div>
+                            <div class="col" style="margin-right: 30px"> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">11</div></div>
+                            <div class="col"> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">{{ model_post.count_likes() }}</div></div>
+                            <div class="col" style=""> <div class=" text-bg-primary text-center mx-2" style="border-radius: 5px">{{ model_post.count_dislikes() }}</div></div>
                         </div>
                     </div>
                 </div>

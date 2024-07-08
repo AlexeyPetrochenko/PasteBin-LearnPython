@@ -7,8 +7,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 
 from .forms import PostForm
-from .services import form_handler
-from .models import Post
+from .services import form_handler, process_the_rate_like_or_dislike
+from .models import Post, LikeOnPost
 from app_paste_bin.db import db, db_session
 
 
@@ -68,8 +68,6 @@ def get_post(url_post):
 def get_all_public_posts():
     try:
         public_posts = Post.query.filter(and_(Post.privacy == True, Post.date_deletion > datetime.now())).all()
-        for post in public_posts:
-            print(post)
         return render_template('post/all_public_posts.html', public_posts=public_posts, user=current_user)
     except SQLAlchemyError as err:
         print(f'Сбой в подключении к БД {err}')
@@ -133,3 +131,16 @@ def process_upgrade_post(post_id):
         print(err)
         flash('Ошибка соединения с БД')
         return redirect(url_for('user.personal_account', slug_login=current_user.login))
+
+
+@blueprint.route('/give-a-like/<int:post_id>/<like_or_dislike>')
+def rate_post(post_id, like_or_dislike: int):
+    post = Post.query.get(post_id)
+    likes = post.likes
+    like_or_dislike = bool(int(like_or_dislike))
+    if current_user.is_authenticated:
+        process_the_rate_like_or_dislike(likes,like_or_dislike, post)
+    else:
+        flash('Лайки могут оставлять только авторизированные пользователи!!!')
+    return redirect(url_for('post.get_post', url_post=post_id))
+
