@@ -4,11 +4,12 @@
 {% block content %}
 <div class="row">
     <div class="col-7 text-bg-secondary">
-    <form action="{{ url_for('post.process_create_post') }}" method="POST">
+    <form action="{{ url_for('post.process_upgrade_post', post_id=post.id) }}" method="POST">
         <div class="row">
             {{ form_post.hidden_tag() }}
             <div class="mb-3 form-check">
-                {{ form_post.post_text.label(class_='form-label fs-4', style='margin-left: -11px') }}
+                <div class="form-label fs-5" style='margin-left: -11px' >Редактирование поста:</div>
+                <div class="form-label fs-4" style='margin-left: -11px' >{{ post.title }}</div>
                 {{ form_post.post_text() }}
             </div>
         </div>
@@ -37,9 +38,9 @@
                             {{ form_post.password_post() }}
                         </div>
                     </div>
-                    
+
                     <div class="col-4"></div>
-                    <div class="col-8">{{ form_post.submit() }}</div>
+                    <div class="col-8">{{ form_post.submit_update() }}</div>
                 </div>
             </div>
             <div class="col-5 bg-primary-lighter">ЛИЧНЫЙ ПРОФИЛЬ</div>

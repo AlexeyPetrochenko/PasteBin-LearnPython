@@ -32,7 +32,6 @@ with app.app_context():
     new_user = User(login=username, email=email, date_register=date_reg)
     new_user.set_password(password)
 
-
     db.session.add(new_user)
     db.session.commit()
     print('Создан пользователь с id={}'.format(new_user.id))

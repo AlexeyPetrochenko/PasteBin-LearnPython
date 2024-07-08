@@ -20,12 +20,22 @@
         </li>
 
       </ul>
+
+      {% if user.is_authenticated %}
+        <a class="" href="{{ url_for('user.personal_account', slug_login=user.login) }}">
+          <button class="btn btn-outline-secondary me-2" type="submit">Личный кабинет: {{ user.login }}</button>
+        </a>
+         <a class="" href="{{ url_for('user.logout') }}">
+          <button class="btn btn-outline-secondary" type="submit">Выйти</button>
+        </a>
+      {% else %}
         <a class="" href="{{ url_for('user.login') }}">
           <button class="btn btn-outline-secondary me-2" type="submit">Вход</button>
         </a>
-        <a class="" href="{{ url_for('user.login') }}">
+        <a class="" href="{{ url_for('user.register') }}">
           <button class="btn btn-outline-secondary" type="submit">Регистрация</button>
         </a>
+      {% endif %}
 
     </div>
   </div>
