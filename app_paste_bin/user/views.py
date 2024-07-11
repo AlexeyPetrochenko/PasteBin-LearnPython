@@ -8,7 +8,6 @@ from .forms import LoginForm, RegistrationForm
 from .models import User
 
 
-
 blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
@@ -25,7 +24,6 @@ def login():
 @blueprint.route('/process-login', methods=['POST'])
 def process_login():
     form = LoginForm()
-
     if form.validate_on_submit():
         user = User.query.filter(User.login == form.username.data).first()
         if user and user.check_password(form.password.data):

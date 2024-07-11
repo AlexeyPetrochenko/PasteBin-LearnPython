@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, TextAreaField, SelectField, SubmitField, StringField
-from wtforms.validators import DataRequired, Optional
+from wtforms.validators import DataRequired, Optional, ValidationError
 
 
 class PostForm(FlaskForm):
@@ -19,12 +19,12 @@ class PostForm(FlaskForm):
                          render_kw={'class': 'form-select'})
     lifespan = SelectField('Срок жизни:', validators=[DataRequired()],
                              choices=[
-                                 ('never', 'Не удалять'),
                                  ('min', '15 минут'),
                                  ('hour', '1 час'),
                                  ('day', '1 день'),
                                  ('mount', '30 дней'),
-                                 ('after_read', 'Удалить после прочтения'),
+                                 ('never', 'Не удалять'),
+                                 # ('after_read', 'Удалить после прочтения'),
                              ],
                              render_kw={'class': 'form-select'})
     privacy = SelectField('Приватность:', validators=[DataRequired()],
@@ -33,7 +33,16 @@ class PostForm(FlaskForm):
                               ('private', 'Приватный'),
                           ],
                           render_kw={'class': 'form-select'})
-    is_password = BooleanField(render_kw={'class': 'form-check-input mt-0'})
-    password_post = StringField('Пароль:',  validators=[Optional()], render_kw={'class': 'form-control'})
+    # is_password = BooleanField(render_kw={'class': 'form-check-input mt-0'})
+    password_post = StringField('Пароль:',  validators=[Optional()], render_kw={'class': 'form-control', 'type': "password"})
     submit = SubmitField(label='Создать новый пост', render_kw={'class': 'btn btn-success form-control mb-5'})
     submit_update = SubmitField(label='Сохранить изменения', render_kw={'class': 'btn btn-success form-control mb-5'})
+
+    def validate_privacy(self, privacy):
+        if privacy.data == 'public' and self.password_post.data:
+            raise ValidationError('Пароль можно поставить только на приватные посты.')
+
+
+class PasswordForPost(FlaskForm):
+    password = StringField(label='Введите пароль:', validators=[DataRequired()], render_kw={'class': 'form-control', 'type': "password"})
+    submit = SubmitField(label='Подтвердить', render_kw={'class': 'btn btn-success form-control mt-3'})

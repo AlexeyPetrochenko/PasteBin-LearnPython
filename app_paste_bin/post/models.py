@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey
 from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime, timedelta
 
@@ -51,6 +52,12 @@ class Post(Base):
             if like.is_like is False:
                 count_dislike.append(1)
         return sum(count_dislike)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class LikeOnPost(Base):
