@@ -10,6 +10,7 @@
         <div class="col">Название поста</div>
         <div class="col text-center">Автор поста</div>
         <div class="col text-center">Лайки/Дизлайки</div>
+        <div class="col text-center">Комментарии</div>
         <div class="col text-center">Дата создания</div>
         <div class="col text-center">Осталось существовать</div>
         <div class="col text-center">Синтаксис</div>
@@ -23,6 +24,7 @@
                 </div>
                 <div class="col text-center">{{ post.user.login }}</div>
                 <div class="col text-center">{{ post.count_likes() }}/{{ post.count_dislikes() }}</div>
+                <div class="col text-center">{{ post.comments_count() }}</div>
                 <div class="col text-center">{{ post.get_date_create() }}</div>
                 <div class="col text-center">{{ post.get_lifespan() }}</div>
                 <div class="col text-center">{{ post.syntax }}</div>

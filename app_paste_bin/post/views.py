@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, redirect, url_for, session
+from flask import Blueprint, flash, render_template, redirect, request, url_for, session
 from flask_login import current_user, login_required
 
 from sqlalchemy import and_
@@ -6,11 +6,12 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from datetime import datetime
 
-from .forms import PostForm, PasswordForPost
+from .forms import PostForm, PasswordForPost, CommentForm
 from .services import form_handler, process_the_rate_like_or_dislike, generate_hmac, checking_access
-from .models import Post, LikeOnPost
+from .models import Post, LikeOnPost, Comment
 from app_paste_bin.db import db, db_session
 from app_paste_bin.config import SECRET_KEY
+from app_paste_bin.utils import get_redirect_target
 
 blueprint = Blueprint('post', __name__)
 
@@ -59,14 +60,15 @@ def process_create_post():
 @blueprint.route('/post/<int:url_post>')
 def get_post(url_post):
     post_from_db = Post.query.filter(and_(Post.id == url_post, Post.date_deletion > datetime.now())).first()
+    comment_form = CommentForm(post_id=post_from_db.id)
     if post_from_db and post_from_db.password:
         if checking_access(post_from_db, url_post):
-            return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user)
+            return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user, comment_form=comment_form)
         else:
             password_form = PasswordForPost()
-            return render_template('post/password_for_post.html', form=password_form, user=current_user, post=post_from_db)
+            return render_template('post/password_for_post.html', form=password_form, user=current_user, post=post_from_db, comment_form=comment_form)
     else:
-        return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user)
+        return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user, comment_form=comment_form)
 
 
 @blueprint.route('/password-for-post/<int:post_id>', methods=['POST'])
@@ -161,3 +163,20 @@ def rate_post(post_id, like_or_dislike: int):
         flash('Лайки могут оставлять только авторизированные пользователи!!!')
     return redirect(url_for('post.get_post', url_post=post_id))
 
+@blueprint.route('/post/comment', methods=['POST'])
+@login_required
+def add_comment():
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(context=form.context.data, post_id=form.post_id.data, user_id=current_user.id)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Комментарий успешно добавлен')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash('Ошибка в заполнении поля "{}": - {}'.format(
+                    getattr(form, field).label.text,
+                    error
+                ))
+    return redirect(get_redirect_target())

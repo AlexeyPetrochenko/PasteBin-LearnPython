@@ -27,6 +27,9 @@ class Post(Base):
     def __repr__(self):
         return f'<ID: {self.id}, Title: {self.title}>'
 
+    def comments_count(self):
+        return Comment.query.filter(Comment.post_id == self.id).count()
+
     def get_lifespan(self):
         ttl = self.date_deletion - datetime.now()
         if ttl > timedelta(minutes=0):
@@ -69,3 +72,28 @@ class LikeOnPost(Base):
 
     def __repr__(self):
         return f'<ID: {self.id}, rate: {self.is_like}>'
+
+
+class Comment(Base):
+    __tablename__ = 'coments'
+
+    id = Column(Integer, primary_key=True)
+    context = Column(Text, nullable=False)
+    time_comment = Column(DateTime, nullable=False, default=datetime.now())
+    post_id = Column(
+        Integer,
+        ForeignKey('posts.id', ondelete='CASCADE'),
+        index=True
+    )
+    user_id = Column(
+        Integer,
+        ForeignKey('users.id', ondelete='CASCADE'),
+        index=True
+    )
+
+    post = relationship('Post', backref='coments')
+    user = relationship('User', backref='coments')
+
+    def __repr__(self):
+        return '<Comment {}>'.format(self.id)
+
