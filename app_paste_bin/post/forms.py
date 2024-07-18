@@ -56,6 +56,7 @@ class CommentForm(FlaskForm):
                           validators=[DataRequired()], render_kw={"class": "form-control"})
     submit = SubmitField('Отправить!',
                          render_kw={"class": "btn btn-success"})
+
     def validate_post_id(self, post_id):
-        if not Post.query.get(post_id.date):
+        if not Post.query.get(post_id.data):
             raise ValidationError('Новости с таким id не существует')

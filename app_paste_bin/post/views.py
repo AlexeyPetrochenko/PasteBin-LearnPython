@@ -163,6 +163,7 @@ def rate_post(post_id, like_or_dislike: int):
         flash('Лайки могут оставлять только авторизированные пользователи!!!')
     return redirect(url_for('post.get_post', url_post=post_id))
 
+
 @blueprint.route('/post/comment', methods=['POST'])
 @login_required
 def add_comment():
