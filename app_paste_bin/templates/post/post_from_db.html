@@ -51,42 +51,37 @@
                 <textarea class="form-control height" style="height: 400px; resize: none;" disabled readonly>{{ model_post.post_text }}</textarea>
             </div>
         </div>
-        <div class="row">
-            <div class="col m-1 h5"> Ваш комментарий:</div>
-        </div>
-        <div class="row text-bg-secondary">
-            <div class="col text-bg-light m-3" style="border-radius: 5px; height: 120px; resize: none;">
-                <div></div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-3">Выбрать синтаксис:</div>
-            <div class="col-3">
-                <div class="dropdown">
-                  <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                    Dropdown button
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  </ul>
+        {% include('messages.html') %}
+        {% if model_post.coments %}
+            <h3>Комментарии:</h3>
+            {% for comment in model_post.coments %}
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">{{ comment.context }}</p>
+                    <p class="card-text">
+                        <small>Опубликовано: {{ comment.time_comment.strftime('%d.%m.%Y') }} |
+                            Автор: {{ comment.user.login }}</small>
+                    </p>
                 </div>
             </div>
-            <div class="col"></div>
-            <div class="col-4"><button type="button" class="btn btn-success">Оставить комментарий</button></div>
-        </div>
+            {% endfor %}
+        {% endif %}
+        {% if current_user.is_authenticated %}
+            <form action="{{ url_for('post.add_comment') }}" method="POST">
+                {{ comment_form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ comment_form.context.label }}
+                        {{ comment_form.context() }}
+                    </div>
+                {{ comment_form.submit() }}
+            </form>
+        {% else %}
+            <p>
+                <a href="{{ url_for('user.login', next=request.full_path) }}">Авторизуйтесь</a> чтобы добавить комментарий
+            </p>
+        {% endif %}
     </div>
     <div class="col-1 text-bg-secondary"></div>
     <div class="col-4 text-bg-secondary p-3">Топ 10 постов</div>
 </div>
 {% endblock %}
-
-
-
-
-
-
-
-
-

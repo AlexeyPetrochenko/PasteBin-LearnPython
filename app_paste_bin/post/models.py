@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, ForeignKey
 from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime, timedelta
 
@@ -25,6 +26,9 @@ class Post(Base):
 
     def __repr__(self):
         return f'<ID: {self.id}, Title: {self.title}>'
+
+    def comments_count(self):
+        return Comment.query.filter(Comment.post_id == self.id).count()
 
     def get_lifespan(self):
         ttl = self.date_deletion - datetime.now()
@@ -52,6 +56,12 @@ class Post(Base):
                 count_dislike.append(1)
         return sum(count_dislike)
 
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
 
 class LikeOnPost(Base):
     __tablename__ = 'likes_on_posts'
@@ -62,3 +72,28 @@ class LikeOnPost(Base):
 
     def __repr__(self):
         return f'<ID: {self.id}, rate: {self.is_like}>'
+
+
+class Comment(Base):
+    __tablename__ = 'coments'
+
+    id = Column(Integer, primary_key=True)
+    context = Column(Text, nullable=False)
+    time_comment = Column(DateTime, nullable=False, default=datetime.now())
+    post_id = Column(
+        Integer,
+        ForeignKey('posts.id', ondelete='CASCADE'),
+        index=True
+    )
+    user_id = Column(
+        Integer,
+        ForeignKey('users.id', ondelete='CASCADE'),
+        index=True
+    )
+
+    post = relationship('Post', backref='coments')
+    user = relationship('User', backref='coments')
+
+    def __repr__(self):
+        return '<Comment {}>'.format(self.id)
+
