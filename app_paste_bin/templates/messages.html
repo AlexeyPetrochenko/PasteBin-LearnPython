@@ -1,0 +1,9 @@
+{% with messages = get_flashed_messages() %}
+    {% if massages %}
+    <div class="alert alert-waring" role="alert">
+        {% for message  in messages%}
+            {{ message }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}

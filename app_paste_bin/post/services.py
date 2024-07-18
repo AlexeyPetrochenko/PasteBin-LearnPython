@@ -1,13 +1,16 @@
-from flask import url_for, flash
+from flask import url_for, flash, session
 from flask_login import current_user
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import and_
 
 from datetime import datetime, timedelta
+import hmac
+import hashlib
 
 from .models import LikeOnPost, Post
 from app_paste_bin.db import db_session
+from app_paste_bin.config import SECRET_KEY
 
 
 def form_handler(form_data: dict):
@@ -18,7 +21,7 @@ def form_handler(form_data: dict):
         date_create = datetime.now()
         date_deletion = get_ttl(life_time)
         privacy = get_privacy(form_data['privacy'])
-        password = password_verification(privacy, form_data['is_password'], form_data['password_post'])
+        password = password_verification(privacy, form_data['password_post'])
         syntax = form_data['syntax']
         content = form_data['post_text']
         url_post = url_for('post.create_post')
@@ -29,9 +32,8 @@ def form_handler(form_data: dict):
             'syntax': syntax, 'content': content, 'url_post': url_post
         }
         return processed_data
-
-    except KeyError as err:
-        print(f'Из формы пришли не полные данные {err}')
+    except KeyError:
+        raise
 
 
 def get_ttl(life_time):
@@ -53,20 +55,16 @@ def get_ttl(life_time):
 
 
 def get_privacy(privacy):
-    if privacy == 'public':
+    if privacy == 'private':
         return True
     else:
         return False
 
 
-def password_verification(privacy, is_password, password):
-    if not privacy:
-        password = None
-    elif not is_password:
-        password = None
-    elif not password:
-        password = None
-    return password
+def password_verification(privacy, password):
+    if privacy and password:
+        return password
+    return None
 
 
 def process_the_rate_like_or_dislike(list_likes: list[LikeOnPost], like_or_dislike: bool, post: Post):
@@ -90,3 +88,15 @@ def process_the_rate_like_or_dislike(list_likes: list[LikeOnPost], like_or_disli
     except SQLAlchemyError:
         flash('Лайк не прошел, база данных дала сбой')
 
+
+def generate_hmac(data, secret_key):
+    key = secret_key.encode('utf-8')
+    msg = data.encode('utf-8')
+    return hmac.new(key, msg, hashlib.sha256).hexdigest()
+
+
+def checking_access(post_from_db, post_id):
+    if session.pop(f'post_{post_id}', default=None) == generate_hmac(SECRET_KEY, post_from_db.password):
+        return True
+    else:
+        return False

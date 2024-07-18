@@ -30,14 +30,7 @@
                     <div class="col-8">{{ form_post.privacy() }}</div>
 
                     <div class="col-4">{{ form_post.password_post.label(class='col-form-label') }}</div>
-                    <div class="col-8">
-                        <div class="input-group mb-3">
-                          <div class="input-group-text">
-                            {{ form_post.is_password() }}
-                          </div>
-                            {{ form_post.password_post() }}
-                        </div>
-                    </div>
+                    <div class="col-8">{{ form_post.password_post() }}</div>
 
                     <div class="col-4"></div>
                     <div class="col-8">{{ form_post.submit_update() }}</div>
