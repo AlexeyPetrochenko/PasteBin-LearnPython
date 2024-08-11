@@ -15,7 +15,8 @@ blueprint = Blueprint('user', __name__, url_prefix='/user')
 @blueprint.route('/login')
 def login():
     if current_user.is_authenticated:
-        return redirect(get_redirect_target())
+        if get_redirect_target():
+            return redirect(url_for('post,create_post'))
     title = "Авторизация"
     login_form = LoginForm()
     return render_template('user/login.html',
@@ -30,7 +31,7 @@ def process_login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash('Вы успешно вошли на сайт')
-            return redirect(get_redirect_target())
+            return redirect(url_for('post.create_post'))
 
     flash('Неправильное имя пользователя или пароль')
     return redirect(url_for('user.login'))

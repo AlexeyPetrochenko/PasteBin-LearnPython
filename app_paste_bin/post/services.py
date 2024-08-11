@@ -68,7 +68,8 @@ def password_verification(privacy, password):
 
 
 def process_the_rate_like_or_dislike(list_likes: list[LikeOnPost], like_or_dislike: bool, post: Post):
-    user_like = LikeOnPost.query.filter(and_(LikeOnPost.post_id == post.id, LikeOnPost.user_id == current_user.id)).first()
+    user_like = LikeOnPost.query.filter(and_(LikeOnPost.post_id == post.id,
+                                             LikeOnPost.user_id == current_user.id)).first()
     if user_like:
         if isinstance(user_like.is_like, bool):
             if like_or_dislike and user_like.is_like or not like_or_dislike and not user_like.is_like:

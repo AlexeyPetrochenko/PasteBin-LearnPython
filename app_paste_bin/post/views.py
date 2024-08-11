@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, redirect, request, url_for, session
+from flask import Blueprint, flash, render_template, redirect, url_for, session
 from flask_login import current_user, login_required
 
 from sqlalchemy import and_
@@ -8,7 +8,7 @@ from datetime import datetime
 
 from .forms import PostForm, PasswordForPost, CommentForm
 from .services import form_handler, process_the_rate_like_or_dislike, generate_hmac, checking_access
-from .models import Post, LikeOnPost, Comment
+from .models import Post, Comment
 from app_paste_bin.db import db, db_session
 from app_paste_bin.config import SECRET_KEY
 from app_paste_bin.utils import get_redirect_target
@@ -24,7 +24,8 @@ def create_post():
     else:
         form_post = PostForm()
     title = 'PasteBin'
-    return render_template('post/create_post.html', page_titel=title, form_post=form_post, user=current_user)
+    return render_template('post/create_post.html', page_titel=title, form_post=form_post,
+                           user=current_user)
 
 
 @blueprint.route('/process-create-post', methods=['POST'])
@@ -45,7 +46,7 @@ def process_create_post():
                 db.session.commit()
                 flash('Круто ты создал пост')
                 return redirect(url_for('post.get_post', url_post=new_post.id))
-        except (SQLAlchemyError, KeyError) as err:
+        except (SQLAlchemyError, KeyError):
             flash('Пост не создался')
             redirect(url_for('post.create_post'))
     else:
@@ -63,12 +64,15 @@ def get_post(url_post):
     comment_form = CommentForm(post_id=post_from_db.id)
     if post_from_db and post_from_db.password:
         if checking_access(post_from_db, url_post):
-            return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user, comment_form=comment_form)
+            return render_template('post/post_from_db.html', model_post=post_from_db,
+                                   user=current_user, comment_form=comment_form)
         else:
             password_form = PasswordForPost()
-            return render_template('post/password_for_post.html', form=password_form, user=current_user, post=post_from_db, comment_form=comment_form)
+            return render_template('post/password_for_post.html', form=password_form,
+                                   user=current_user, post=post_from_db, comment_form=comment_form)
     else:
-        return render_template('post/post_from_db.html', model_post=post_from_db, user=current_user, comment_form=comment_form)
+        return render_template('post/post_from_db.html', model_post=post_from_db,
+                               user=current_user, comment_form=comment_form)
 
 
 @blueprint.route('/password-for-post/<int:post_id>', methods=['POST'])
@@ -87,8 +91,9 @@ def input_password_for_post(post_id):
 @blueprint.route('/all-public-posts')
 def get_all_public_posts():
     try:
-        public_posts = Post.query.filter(and_(Post.privacy == False, Post.date_deletion > datetime.now())).all()
-        return render_template('post/all_public_posts.html', public_posts=public_posts, user=current_user)
+        public_posts = Post.query.filter(and_(Post.privacy is not False, Post.date_deletion > datetime.now())).all()
+        return render_template('post/all_public_posts.html', public_posts=public_posts,
+                               user=current_user)
     except SQLAlchemyError as err:
         print(f'Сбой в подключении к БД {err}')
         flash('Очень жаль. Сервер БД неожиданно закрыл соединение')

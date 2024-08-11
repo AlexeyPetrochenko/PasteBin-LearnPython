@@ -14,7 +14,7 @@ class PostForm(FlaskForm):
     title = StringField(label='Название поста:', validators=[DataRequired()], render_kw={'class': 'form-control'})
     syntax = SelectField('Синтаксис:', validators=[DataRequired()],
                          choices=[
-                             ('none', 'None'),
+                             ('Нет', 'Нет'),
                              ('python', 'Python'),
                              ('java', 'Java'),
                          ],
@@ -36,7 +36,8 @@ class PostForm(FlaskForm):
                           ],
                           render_kw={'class': 'form-select'})
     # is_password = BooleanField(render_kw={'class': 'form-check-input mt-0'})
-    password_post = StringField('Пароль:',  validators=[Optional()], render_kw={'class': 'form-control', 'type': "password"})
+    password_post = StringField('Пароль:',  validators=[Optional()],
+                                render_kw={'class': 'form-control', 'type': "password"})
     submit = SubmitField(label='Создать новый пост', render_kw={'class': 'btn btn-success form-control mb-5'})
     submit_update = SubmitField(label='Сохранить изменения', render_kw={'class': 'btn btn-success form-control mb-5'})
 
@@ -46,7 +47,8 @@ class PostForm(FlaskForm):
 
 
 class PasswordForPost(FlaskForm):
-    password = StringField(label='Введите пароль:', validators=[DataRequired()], render_kw={'class': 'form-control', 'type': "password"})
+    password = StringField(label='Введите пароль:', validators=[DataRequired()],
+                           render_kw={'class': 'form-control', 'type': "password"})
     submit = SubmitField(label='Подтвердить', render_kw={'class': 'btn btn-success form-control mt-3'})
 
 

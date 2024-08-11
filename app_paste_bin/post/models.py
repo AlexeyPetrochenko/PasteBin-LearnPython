@@ -5,7 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 
 from app_paste_bin.db import Base
-from app_paste_bin.user.models import User
 
 
 class Post(Base):
@@ -21,8 +20,10 @@ class Post(Base):
     syntax = Column(String)
     post_text = Column(Text())
     url_post_text = Column(String)
-    user = relationship('User', lazy='joined')
-    likes = relationship('LikeOnPost', lazy='joined')
+    user = relationship('User')
+    # user = relationship('User', lazy='joined')
+    likes = relationship('LikeOnPost')
+    # likes = relationship('LikeOnPost', lazy='joined')
 
     def __repr__(self):
         return f'<ID: {self.id}, Title: {self.title}>'
@@ -34,7 +35,7 @@ class Post(Base):
         ttl = self.date_deletion - datetime.now()
         if ttl > timedelta(minutes=0):
             if ttl > timedelta(days=365):
-                return f'Never'
+                return chr(8734)
             if ttl > timedelta(days=1):
                 return f'Дней: {ttl.days}'
             elif ttl > timedelta(seconds=3600):
@@ -66,8 +67,8 @@ class Post(Base):
 class LikeOnPost(Base):
     __tablename__ = 'likes_on_posts'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
-    post_id = Column(Integer, ForeignKey('posts.id', ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    post_id = Column(Integer, ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
     is_like = Column(Boolean, nullable=True)
 
     def __repr__(self):
@@ -83,12 +84,14 @@ class Comment(Base):
     post_id = Column(
         Integer,
         ForeignKey('posts.id', ondelete='CASCADE'),
-        index=True
+        index=True,
+        nullable=False
     )
     user_id = Column(
         Integer,
         ForeignKey('users.id', ondelete='CASCADE'),
-        index=True
+        index=True,
+        nullable=False
     )
 
     post = relationship('Post', backref='coments')
@@ -96,4 +99,3 @@ class Comment(Base):
 
     def __repr__(self):
         return '<Comment {}>'.format(self.id)
-
