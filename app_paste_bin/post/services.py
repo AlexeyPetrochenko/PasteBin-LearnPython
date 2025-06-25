@@ -10,7 +10,7 @@ import hashlib
 
 from .models import LikeOnPost, Post
 from app_paste_bin.db import db_session
-from app_paste_bin.config import SECRET_KEY
+from app_paste_bin.config import config
 
 
 def form_handler(form_data: dict):
@@ -97,7 +97,7 @@ def generate_hmac(data, secret_key):
 
 
 def checking_access(post_from_db, post_id):
-    if session.pop(f'post_{post_id}', default=None) == generate_hmac(SECRET_KEY, post_from_db.password):
+    if session.pop(f'post_{post_id}', default=None) == generate_hmac(config.SECRET_KEY, post_from_db.password):
         return True
     else:
         return False

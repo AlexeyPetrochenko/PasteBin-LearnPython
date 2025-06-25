@@ -14,7 +14,7 @@ class User(Base, UserMixin):
     id = Column(Integer, primary_key=True)
     login = Column(String(64), index=True, unique=True)
     email = Column(String(64), index=True, unique=True)
-    password = Column(String(300))
+    password = Column(String())
     date_register = Column(DateTime)
     posts = relationship('Post', back_populates='user')
 

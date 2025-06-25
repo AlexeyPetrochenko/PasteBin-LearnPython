@@ -10,7 +10,7 @@ from .forms import PostForm, PasswordForPost, CommentForm
 from .services import form_handler, process_the_rate_like_or_dislike, generate_hmac, checking_access
 from .models import Post, Comment
 from app_paste_bin.db import db, db_session
-from app_paste_bin.config import SECRET_KEY
+from app_paste_bin.config import config
 from app_paste_bin.utils import get_redirect_target
 
 blueprint = Blueprint('post', __name__)
@@ -82,7 +82,7 @@ def input_password_for_post(post_id):
         password = password_form.password.data
         post = Post.query.filter_by(id=post_id).first()
         if post and post.check_password(password):
-            session[f'post_{post_id}'] = generate_hmac(SECRET_KEY, post.password)
+            session[f'post_{post_id}'] = generate_hmac(config.SECRET_KEY, post.password)
             return redirect(url_for('post.get_post', url_post=post_id))
     flash('Неправильный пароль')
     return redirect(url_for('post.get_post', url_post=post_id))
